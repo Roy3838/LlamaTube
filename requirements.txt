@@ -1,0 +1,6 @@
+torch
+transformers
+numpy
+boto3
+smart_open
+wandb
