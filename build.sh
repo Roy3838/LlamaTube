@@ -12,7 +12,6 @@ increment_version() {
   local parts[last]=$((parts[last]+1))
   echo "${parts[*]}" | sed "s/ /${delimiterchar}/g"
 }
-
 # Read the current version
 VERSION=$(cat version.txt)
 
@@ -22,12 +21,10 @@ NEW_VERSION=$(increment_version $VERSION)
 # Update version.txt
 echo $NEW_VERSION > version.txt
 
-
 # Check if there are any changes to commit
-
 if [[ -n $(git status -s) ]]; then
   echo "Changes detected. Committing and pushing..."
-  
+
   # Commit changes
   git add .
   git commit -m "Build version $NEW_VERSION"
@@ -45,11 +42,7 @@ docker build -t llama-fine-tuning-gpu .
 echo "Build completed. Starting Docker Version: $NEW_VERSION"
 
 docker run --gpus all --env-file .env \
-	  -v ~/.aws:/root/.aws:ro \
-	    -v $(pwd):/app \
-	      -v ~/LLAMA_W:/LLAMA_W:ro \
-	        -it llama-fine-tuning-gpu
-
-
-
-
+  -v ~/.aws:/root/.aws:ro \
+  -v $(pwd):/app \
+  -v /home/ubuntu/LLAMA_W:/LLAMA_W:ro \
+  -it llama-fine-tuning-gpu
