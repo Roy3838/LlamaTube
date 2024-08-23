@@ -88,7 +88,7 @@ def get_datasets(tokenizer, train_subset_size=None, eval_subset_size=None):
     # ... (function implementation remains the same)
 
 def main(train_subset_size=None, eval_subset_size=None):
-    base_model_name = "/home/ubuntu/LLAMA_W/1"  # Update this to your actual model path
+    base_model_name = "meta-llama/Llama-2-7b-chat-hf"  # Update this to your actual model path
     
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
