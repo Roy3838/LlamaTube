@@ -26,4 +26,4 @@ EXPOSE 80
 ENV NAME World
 
 # Run train.py when the container launches
-CMD ["python", "llama3.py"]
+CMD ["python", "train.py"]
