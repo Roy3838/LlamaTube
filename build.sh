@@ -22,19 +22,25 @@ NEW_VERSION=$(increment_version $VERSION)
 # Update version.txt
 echo $NEW_VERSION > version.txt
 
-# Commit changes
-git add .
-git commit -m "Build version $NEW_VERSION"
 
-# Push changes to GitHub
-git push origin main
+# Check if there are any changes to commit
 
-<<<<<<< HEAD
+if [[ -n $(git status -s) ]]; then
+  echo "Changes detected. Committing and pushing..."
+  
+  # Commit changes
+  git add .
+  git commit -m "Build version $NEW_VERSION"
+
+  # Push changes to GitHub
+  git push origin main
+
+  echo "Changes pushed to GitHub."
+else
+  echo "No changes detected. Skipping commit and push."
+fi
 
 docker build -t llama-fine-tuning-gpu .
-=======
-docker tag llama-fine-tuning-gpu:$NEW_VERSION llama-fine-tuning-gpu:latest
->>>>>>> 7c7d23f6b1629ff474cbc1d8cad940ea50db3630
 
 echo "Build completed. Starting Docker Version: $NEW_VERSION"
 
