@@ -161,4 +161,4 @@ def main(train_subset_size=None, eval_subset_size=None):
 
 if __name__ == "__main__":
     # Example: Train on 10,000 samples and evaluate on 1,000
-    main(train_subset_size=10000, eval_subset_size=1000)
+    main(train_subset_size=1000, eval_subset_size=100)
