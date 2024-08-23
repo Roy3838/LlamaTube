@@ -28,9 +28,63 @@ os.environ['AWS_SECRET_ACCESS_KEY'] = os.getenv('AWS_SECRET_ACCESS_KEY')
 wandb.login(key=os.getenv('WANDB_API_KEY'))
 
 class StreamingYouTubeTitleDataset(Dataset):
-    # ... (rest of the class implementation remains the same)
+    def __init__(self, file_path, tokenizer, max_length=512, subset_size=None):
+        self.file_path = file_path
+        self.tokenizer = tokenizer
+        self.max_length = max_length
+        self.bins = [-np.inf, 1, 2, 3, 4, 5, 6, np.inf]
+        self.labels = ["Worst", "Bad", "Average", "Good", "Very Good", "Excellent", "Perfect"]
+        self.subset_size = subset_size
+        self.data = self.load_data()
+
+    def load_data(self):
+        data = []
+        with smart_open(self.file_path, 'r') as file:
+            for line in file:
+                item = json.loads(line)
+                data.append(self.process_item(item))
+                
+                if self.subset_size and len(data) >= self.subset_size:
+                    break
+        
+        if self.subset_size:
+            random.shuffle(data)
+            data = data[:self.subset_size]
+        
+        return data
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        return self.data[idx]
+
+    def get_label(self, log_view_count):
+        for i in range(len(self.bins) - 1):
+            if self.bins[i] <= log_view_count < self.bins[i + 1]:
+                return self.labels[i]
+        return self.labels[-1]
+
+    def generate_prompt(self, item):
+        log_view_count = np.log10(item['view_count'])
+        label = self.get_label(log_view_count)
+        return f"""Classify the title into one of the following categories: Worst, Bad, Average, Good, Very Good, Excellent, Perfect.
+title: {item["title"]}
+label: {label}""".strip()
+
+    def process_item(self, item):
+        prompt = self.generate_prompt(item)
+        inputs = self.tokenizer(prompt, truncation=True, max_length=self.max_length, padding="max_length", return_tensors="pt")
+        return {
+            "input_ids": inputs.input_ids.squeeze(),
+            "attention_mask": inputs.attention_mask.squeeze(),
+            "labels": inputs.input_ids.squeeze()
+        }
 
 def get_datasets(tokenizer, train_subset_size=None, eval_subset_size=None):
+    train_dataset = StreamingYouTubeTitleDataset('s3://llama-finetuning-data-jay/train_data.jsonl', tokenizer, subset_size=train_subset_size)
+    eval_dataset = StreamingYouTubeTitleDataset('s3://llama-finetuning-data-jay/test_data.jsonl', tokenizer, subset_size=eval_subset_size)
+    return train_dataset, eval_dataset
     # ... (function implementation remains the same)
 
 def main(train_subset_size=None, eval_subset_size=None):
