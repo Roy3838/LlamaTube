@@ -29,9 +29,6 @@ git commit -m "Build version $NEW_VERSION"
 # Push changes to GitHub
 git push origin main
 
-
-docker build -t llama-fine-tuning-gpu .
-
 docker tag llama-fine-tuning-gpu:$NEW_VERSION llama-fine-tuning-gpu:latest
 
 echo "Build completed. Starting Docker Version: $NEW_VERSION"
