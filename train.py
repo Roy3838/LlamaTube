@@ -6,6 +6,11 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments,
 import boto3
 from smart_open import smart_open
 
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
+
 class StreamingYouTubeTitleDataset(IterableDataset):
     def __init__(self, file_path, tokenizer, max_length=512):
         self.file_path = file_path
@@ -64,6 +69,7 @@ def main():
     )
     model.config.use_cache = False
     model.config.pretraining_tp = 1
+    model = model.to(device)
 
     train_dataset, eval_dataset = get_datasets(tokenizer)
 
