@@ -10,3 +10,4 @@ smart_open>=6.3.0
 python-dotenv>=0.21.0
 numpy>=1.21.0
 tqdm>=4.64.0
+logging
