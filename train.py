@@ -35,23 +35,21 @@ class StreamingYouTubeTitleDataset(Dataset):
         self.bins = [-np.inf, 1, 2, 3, 4, 5, 6, np.inf]
         self.labels = ["Worst", "Bad", "Average", "Good", "Very Good", "Excellent", "Perfect"]
         self.subset_size = subset_size
-        self.data = self.load_data()
+        self.data = []  # Initialize as an empty list
+        self.load_data()  # Call load_data in the constructor
 
     def load_data(self):
-        data = []
         with smart_open(self.file_path, 'r') as file:
             for line in file:
                 item = json.loads(line)
-                data.append(self.process_item(item))
+                self.data.append(self.process_item(item))
                 
-                if self.subset_size and len(data) >= self.subset_size:
+                if self.subset_size and len(self.data) >= self.subset_size:
                     break
         
         if self.subset_size:
-            random.shuffle(data)
-            data = data[:self.subset_size]
-        
-        return data
+            random.shuffle(self.data)
+            self.data = self.data[:self.subset_size]
 
     def __len__(self):
         return len(self.data)
@@ -85,7 +83,8 @@ def get_datasets(tokenizer, train_subset_size=None, eval_subset_size=None):
     train_dataset = StreamingYouTubeTitleDataset('s3://llama-finetuning-data-jay/train_data.jsonl', tokenizer, subset_size=train_subset_size)
     eval_dataset = StreamingYouTubeTitleDataset('s3://llama-finetuning-data-jay/test_data.jsonl', tokenizer, subset_size=eval_subset_size)
     return train_dataset, eval_dataset
-    # ... (function implementation remains the same)
+
+
 
 def main(train_subset_size=None, eval_subset_size=None):
     base_model_name = "/LLAMA_W/1/" # Update this to your actual model path
@@ -122,7 +121,7 @@ def main(train_subset_size=None, eval_subset_size=None):
     print(f"Training on {len(train_dataset)} samples, evaluating on {len(eval_dataset)} samples")
 
     training_args = TrainingArguments(
-        output_dir="/home/ubuntu/finalmodel",
+        output_dir="finalmodel",
         num_train_epochs=3,
         per_device_train_batch_size=4,
         per_device_eval_batch_size=4,
@@ -150,7 +149,7 @@ def main(train_subset_size=None, eval_subset_size=None):
     trainer.train()
 
     # Save the model
-    trainer.save_model("/home/ubuntu/finalmodel")
+    trainer.save_model("finalmodel")
 
     # Example inference
     from transformers import pipeline
