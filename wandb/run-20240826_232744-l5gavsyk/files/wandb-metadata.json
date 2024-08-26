@@ -1,0 +1,68 @@
+{
+    "os": "Linux-5.15.0-1066-aws-x86_64-with-glibc2.35",
+    "python": "3.10.6",
+    "heartbeatAt": "2024-08-26T23:27:45.313490",
+    "startedAt": "2024-08-26T23:27:44.973881",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/app/train.py",
+    "codePathLocal": "train.py",
+    "codePath": "train.py",
+    "git": {
+        "remote": "https://github.com/Roy3838/LlamaTube.git",
+        "commit": null
+    },
+    "email": null,
+    "root": "/app",
+    "host": "f9ea90f073ba",
+    "username": "root",
+    "executable": "/usr/bin/python",
+    "cpu_count": 2,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 2924.74125,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2799.998,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3298.971,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2799.998,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2799.998,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 96.73210144042969,
+            "used": 95.65826797485352
+        }
+    },
+    "gpu": "NVIDIA A10G",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA A10G",
+            "memory_total": 24146608128
+        }
+    ],
+    "memory": {
+        "total": 15.433124542236328
+    }
+}
