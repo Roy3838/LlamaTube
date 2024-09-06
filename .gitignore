@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# MODELS
+meta-llama-samsum/*
+meta-llama-overnight1.0/*
+
 # Distribution / packaging
 .Python
 build/
